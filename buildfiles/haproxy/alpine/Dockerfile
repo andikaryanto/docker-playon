@@ -4,4 +4,4 @@ WORKDIR /etc/haproxy
 
 EXPOSE 80
 
-CMD ["haproxy", "-f", "/etc/haproxy/haproxy.cfg"]
+CMD ["haproxy", "-f", "/usr/local/etc/haproxy/haproxy.cfg"]
