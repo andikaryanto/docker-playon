@@ -1,7 +1,7 @@
 version: '3'
 services:    
     nginx:
-        container_name: docker-nginx
+        container_name: docker-playon-nginx
         build: ${NGINX_BUILD}
         volumes:
             - ${NGINX_CONFIG_ROOT}/etc/nginx/nginx.conf:/etc/nginx/nginx.conf
@@ -9,41 +9,69 @@ services:
             - ${NGINX_CONFIG_ROOT}/etc/nginx/sites-available:/etc/nginx/sites-enabled
             - ${APPLICATION_DIR}:/var/www/
         ports:
-            - "9090:80"
+            - "8082:80"
         restart: always
         depends_on:
             - php 
         networks:
             nginx_mysql_php_network:
-                ipv4_address: 172.16.0.2
+                ipv4_address: 192.16.0.2
     php:
-        container_name: docker-php
+        container_name: docker-playon-php
         build: ${PHP_BUILD}
         restart: always
         volumes:
             - ${APPLICATION_DIR}:/var/www/     
             - ${PHP_FPM_CONFIG_ROOT}/usr/local/etc/php-fpm.d/www.conf:/usr/local/etc/php-fpm.d/www.conf
         ports:
-            - "9900:9000"
+            - "9909:9000"
         networks:
             nginx_mysql_php_network:
-                ipv4_address: 172.16.0.3
+                ipv4_address: 192.16.0.3
     mysql8:
-        container_name: docker-mysql8
+        container_name: docker-playon-mysql
         image: mysql:8.0
         environment:
-            MYSQL_ROOT_PASSWORD: root
+            MYSQL_ALLOW_EMPTY_PASSWORD: true
+        #     MYSQL_ROOT_PASSWORD: 
         restart: always
         volumes:
             - ${MYSQL8_DATABASE_PATH}:/var/lib/mysql
         ports:
-            - "3367:3306"
+            - "3306:3306"
         networks:
             nginx_mysql_php_network:
-                ipv4_address: 172.16.0.5
+                ipv4_address: 192.16.0.5
+    haproxy:
+        container_name: docker-playon-haproxy
+        build: ${HAPROXY_BUILD}
+        volumes:
+            - ${HAPROXY_CONFIG_ROOT}/etc/haproxy/haproxy.cfg:/usr/local/etc/haproxy/haproxy.cfg
+        ports:
+            - "8081:80"
+        depends_on:
+            - nginx
+        networks:
+            nginx_mysql_php_network:
+                ipv4_address: 192.16.0.6
+    varnish:
+        container_name: docker-playon-varnish
+        build: ${VARNISH_BUILD}
+        # environment:
+        #     VARNISH_BACKEND_HOST: 192.16.0.6
+        #     VARNISH_BACKEND_PORT: 80
+        volumes:
+            - ${VARNISH_CONFIG_ROOT}/etc/varnish/default.vcl:/etc/varnish/default.vcl
+        ports:
+            - "8080:80"
+        depends_on:
+            - haproxy
+        networks:
+            nginx_mysql_php_network:
+                ipv4_address: 192.16.0.7
 networks:
   nginx_mysql_php_network:
     driver: bridge
     ipam:
       config:
-        - subnet: 172.16.0.0/24
+        - subnet: 192.16.0.0/24
