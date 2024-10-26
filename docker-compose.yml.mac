@@ -57,9 +57,6 @@ services:
     varnish:
         container_name: docker-playon-varnish
         build: ${VARNISH_BUILD}
-        # environment:
-        #     VARNISH_BACKEND_HOST: 192.16.0.6
-        #     VARNISH_BACKEND_PORT: 80
         volumes:
             - ${VARNISH_CONFIG_ROOT}/etc/varnish/default.vcl:/etc/varnish/default.vcl
         ports:
@@ -69,6 +66,14 @@ services:
         networks:
             nginx_mysql_php_network:
                 ipv4_address: 192.16.0.7
+    redis:
+        image: redis:7.2.6-alpine
+        container_name: docker-playon-redis
+        ports:
+            - "6379:6379"
+        networks:
+            nginx_mysql_php_network:
+                ipv4_address: 192.16.0.8
 networks:
   nginx_mysql_php_network:
     driver: bridge
