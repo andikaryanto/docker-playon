@@ -10,6 +10,7 @@ services:
             - ${APPLICATION_DIR}:/var/www/
         ports:
             - "8082:80"
+            - "8083:81"
         restart: always
         depends_on:
             - php 
