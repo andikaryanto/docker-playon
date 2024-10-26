@@ -9,8 +9,8 @@ services:
             - ${NGINX_CONFIG_ROOT}/etc/nginx/sites-available:/etc/nginx/sites-enabled
             - ${APPLICATION_DIR}:/var/www/
         ports:
-            - "8082:80"
-            - "8083:81"
+            - "8082:8080"
+            - "8083:8083"
         restart: always
         depends_on:
             - php 
@@ -24,8 +24,11 @@ services:
         volumes:
             - ${APPLICATION_DIR}:/var/www/     
             - ${PHP_FPM_CONFIG_ROOT}/usr/local/etc/php-fpm.d/www.conf:/usr/local/etc/php-fpm.d/www.conf
+            - ${PHP_FPM_CONFIG_ROOT}/usr/local/etc/php/conf.d/php.ini:/usr/local/etc/php/conf.d/custom.ini
         ports:
             - "9909:9000"
+        command: >
+            sh -c "echo '192.16.0.2 api.localhost' >> /etc/hosts && php-fpm"
         networks:
             nginx_mysql_php_network:
                 ipv4_address: 192.16.0.3
