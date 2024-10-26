@@ -1,0 +1,24 @@
+server {
+    listen          8082 default_server;
+    server_name     _;
+    root            /var/www/allstar/sportshub2/web;
+    index           index.php;
+
+    rewrite ^/(wp-.*.php)$ /wp/$1 last;
+    rewrite ^/(wp-(content|admin|includes).*) /wp/$1 last;
+
+    location / {
+        try_files $uri $uri/ /index.php?$query_string;
+    }
+
+    # pass the PHP scripts to FastCGI server listening on 127.0.0.1:9000
+    location ~ \.php$ {
+        fastcgi_intercept_errors        on;
+        fastcgi_pass                    docker-playon-php:9000;
+        fastcgi_index                   index.php;
+        fastcgi_param                   SCRIPT_FILENAME  $document_root$fastcgi_script_name;
+        include                         fastcgi_params;
+    }
+}
+
+
