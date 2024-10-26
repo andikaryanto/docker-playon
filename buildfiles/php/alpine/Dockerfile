@@ -1,4 +1,4 @@
-FROM php:8.2-fpm-alpine
+FROM php:7.4-fpm-alpine
 
 ENV HOME /www-data
 USER root
@@ -17,8 +17,8 @@ RUN docker-php-source extract \
     
 # needed by xdebug
 
-RUN pecl install xdebug \
-    && docker-php-ext-enable xdebug
+# RUN pecl install xdebug \
+#     && docker-php-ext-enable xdebug
     
 WORKDIR /var/www
 
