@@ -7,13 +7,19 @@ RUN apk add --no-cache \
     $PHPIZE_DEPS \
     openssl-dev \
     autoconf \
-    linux-headers
+    linux-headers \
+    libtool \
+    gcc \
+    make
 
 RUN  apk --update add git zip zlib-dev grep libzip-dev libpng-dev wget  bash openssh-client subversion
 
 RUN docker-php-source extract \
-    && docker-php-ext-install pdo_mysql gd zip bcmath mysqli \ 
-    && docker-php-source delete    
+    && docker-php-ext-install pdo_mysql gd zip bcmath mysqli \
+    # Install Redis extension using PECL
+    && pecl install redis \
+    && docker-php-ext-enable redis \
+    && docker-php-source delete   
     
 # needed by xdebug
 
