@@ -83,6 +83,18 @@ services:
         networks:
             nginx_mysql_php_network:
                 ipv4_address: 192.16.0.8
+    rabbitmq:
+        image: rabbitmq:4-management-alpine
+        container_name: docker-playon-rabbitmq
+        ports:
+            - "5672:5672"
+            - "15672:15672"
+        environment:
+            RABBITMQ_DEFAULT_USER: guest
+            RABBITMQ_DEFAULT_PASS: guest
+        networks:
+            nginx_mysql_php_network:
+                ipv4_address: 192.16.0.9
 networks:
   nginx_mysql_php_network:
     driver: bridge
