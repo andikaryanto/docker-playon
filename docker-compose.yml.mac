@@ -49,6 +49,7 @@ services:
     haproxy:
         container_name: docker-playon-haproxy
         build: ${HAPROXY_BUILD}
+        restart: always
         volumes:
             - ${HAPROXY_CONFIG_ROOT}/etc/haproxy/haproxy.cfg:/usr/local/etc/haproxy/haproxy.cfg
         ports:
@@ -63,6 +64,7 @@ services:
     varnish:
         container_name: docker-playon-varnish
         build: ${VARNISH_BUILD}
+        restart: always
         volumes:
             - ${VARNISH_CONFIG_ROOT}/etc/varnish/default.vcl:/etc/varnish/default.vcl
         ports:
@@ -74,6 +76,7 @@ services:
                 ipv4_address: 192.16.0.7
     redis:
         image: redis:7.2.6-alpine
+        restart: always
         container_name: docker-playon-redis
         ports:
             - "6379:6379"
