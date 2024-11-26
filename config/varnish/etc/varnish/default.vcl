@@ -14,7 +14,7 @@ vcl 4.1;
 
 # Default backend definition. Set this to point to your content server.
 backend default {
-    .host = "192.16.0.6";
+    .host = "192.17.0.6";
     .port = "80";
 }
 
