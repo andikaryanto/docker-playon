@@ -41,6 +41,7 @@ RUN docker-php-source extract \
     bcmath \
     mysqli \
     sockets \
+    pcntl \
     && pecl install redis \
     && docker-php-ext-enable redis \
     && docker-php-source delete

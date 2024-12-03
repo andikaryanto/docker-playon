@@ -86,6 +86,7 @@ services:
                 ipv4_address: 192.17.0.8
     rabbitmq:
         image: rabbitmq:4-management-alpine
+        restart: always
         container_name: docker-playon-rabbitmq
         ports:
             - "5672:5672"
