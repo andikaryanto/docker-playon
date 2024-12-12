@@ -51,6 +51,14 @@ RUN docker-php-source extract \
 #     && docker-php-ext-enable xdebug \
 #     && mv /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini.disabled
 
+# Install and configure Xdebug for PHP 7.4
+RUN pecl install xdebug-3.1.6 \
+    && docker-php-ext-enable xdebug \
+    && echo "xdebug.mode = coverage" >> /usr/local/etc/php/php.ini 
+    # && echo "xdebug.client_host = host.docker.internal" >> /usr/local/etc/php/php.ini \
+    # && echo "xdebug.client_port = 9000" >> /usr/local/etc/php/php.ini \
+    # && echo "xdebug.start_with_request = yes" >> /usr/local/etc/php/php.ini
+
 # Set working directory
 WORKDIR /var/www
 
