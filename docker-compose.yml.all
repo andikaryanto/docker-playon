@@ -73,7 +73,7 @@ services:
         depends_on:
             - haproxy
         networks:
-            nginx_mysql_php_network:
+            nginx_mysql_php_network:    
                 ipv4_address: 192.17.0.7
     redis:
         image: redis:7.2.6-alpine
@@ -97,9 +97,22 @@ services:
         networks:
             nginx_mysql_php_network:
                 ipv4_address: 192.17.0.9
+    amazoncorretto:        
+        container_name: docker-playon-amazoncorretto
+        build: ${AMAZON_CORRETO_BUILD}
+        ports:
+            - "8090:8090"
+        volumes:
+            - vnn_java:/Users/Shared/allstar
+            - ${SSH_KEYS}:/root/.ssh
+        #     - ${CORRETTO_CONFIG_ROOT}/conf/logging.properties:/opt/jdk-17/conf/logging.properties
+        networks:
+            nginx_mysql_php_network:
+                ipv4_address: 192.17.0.10
 volumes:
-    vnn_php:
+    vnn_java:
     vnn_mysql8:
+    vnn_php:
 
 networks:
   nginx_mysql_php_network:
