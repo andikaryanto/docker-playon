@@ -102,6 +102,9 @@ services:
         build: ${AMAZON_CORRETO_BUILD}
         ports:
             - "8090:8090"
+        environment:
+            - MAVEN_USER=${MAVEN_USER}
+            - MAVEN_PASSWORD=${MAVEN_PASSWORD}
         volumes:
             - vnn_java:/Users/Shared/allstar
             - ${SSH_KEYS}:/root/.ssh
