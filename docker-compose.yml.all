@@ -92,8 +92,8 @@ services:
             - "5672:5672"
             - "15672:15672"
         environment:
-            RABBITMQ_DEFAULT_USER: guest
-            RABBITMQ_DEFAULT_PASS: guest
+            RABBITMQ_DEFAULT_USER: celery
+            RABBITMQ_DEFAULT_PASS: celery
         networks:
             nginx_mysql_php_network:
                 ipv4_address: 192.17.0.9
@@ -106,14 +106,15 @@ services:
             - MAVEN_USER=${MAVEN_USER}
             - MAVEN_PASSWORD=${MAVEN_PASSWORD}
         volumes:
-            - vnn_java:/Users/Shared/allstar
+            - vnn_php:/Users/Shared/allstar
             - ${SSH_KEYS}:/root/.ssh
+        extra_hosts:
+            - "api.localhost:192.17.0.2"
         #     - ${CORRETTO_CONFIG_ROOT}/conf/logging.properties:/opt/jdk-17/conf/logging.properties
         networks:
             nginx_mysql_php_network:
                 ipv4_address: 192.17.0.10
 volumes:
-    vnn_java:
     vnn_mysql8:
     vnn_php:
 
