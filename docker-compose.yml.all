@@ -97,7 +97,7 @@ services:
         networks:
             nginx_mysql_php_network:
                 ipv4_address: 192.17.0.9
-    amazoncorretto:        
+    java:        
         container_name: docker-playon-amazoncorretto
         build: ${AMAZON_CORRETO_BUILD}
         ports:
