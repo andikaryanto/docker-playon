@@ -100,6 +100,7 @@ services:
     java:        
         container_name: docker-playon-amazoncorretto
         build: ${AMAZON_CORRETO_BUILD}
+        restart: always
         ports:
             - "8090:8090"
         environment:
@@ -110,6 +111,7 @@ services:
             - ${SSH_KEYS}:/root/.ssh
         extra_hosts:
             - "api.localhost:192.17.0.2"
+            - "api-v2.localhost:192.17.0.2"
         #     - ${CORRETTO_CONFIG_ROOT}/conf/logging.properties:/opt/jdk-17/conf/logging.properties
         networks:
             nginx_mysql_php_network:
