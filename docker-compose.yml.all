@@ -30,6 +30,7 @@ services:
             - "9909:9000"
         extra_hosts:
             - "api.localhost:192.17.0.2"
+            - "sportshub.localhost:192.17.0.2"
         networks:
             nginx_mysql_php_network:
                 ipv4_address: 192.17.0.3
