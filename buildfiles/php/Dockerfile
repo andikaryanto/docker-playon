@@ -21,6 +21,7 @@ RUN apt-get update && apt-get install -y \
     gcc \
     g++ \
     make \
+    redis-tools \
     linux-headers-amd64 \
     --no-install-recommends && rm -rf /var/lib/apt/lists/*
 
@@ -46,18 +47,15 @@ RUN docker-php-source extract \
     && docker-php-ext-enable redis \
     && docker-php-source delete
 
-# Install and configure Xdebug
-# RUN pecl install xdebug \
-#     && docker-php-ext-enable xdebug \
-#     && mv /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini.disabled
-
 # Install and configure Xdebug for PHP 7.4
 RUN pecl install xdebug-3.1.6 \
     && docker-php-ext-enable xdebug \
-    && echo "xdebug.mode = coverage" >> /usr/local/etc/php/php.ini 
-    # && echo "xdebug.client_host = host.docker.internal" >> /usr/local/etc/php/php.ini \
-    # && echo "xdebug.client_port = 9000" >> /usr/local/etc/php/php.ini \
-    # && echo "xdebug.start_with_request = yes" >> /usr/local/etc/php/php.ini
+    && echo "xdebug.mode = coverage" >> /usr/local/etc/php/php.ini
+
+# Install wp-cli
+RUN curl -O https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar \
+    && chmod +x wp-cli.phar \
+    && mv wp-cli.phar /usr/local/bin/wp
 
 # Set working directory
 WORKDIR /var/www
