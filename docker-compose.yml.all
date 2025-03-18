@@ -117,9 +117,26 @@ services:
         networks:
             nginx_mysql_php_network:
                 ipv4_address: 192.17.0.10
+    nodejs:
+        container_name: docker-playon-nodejs
+        build: ${NODEJS_BUILD}
+        restart: always
+        volumes:
+            - node:/projects
+            - ${SSH_KEYS}:/root/.ssh
+        extra_hosts:
+            - "api.localhost:192.17.0.2"
+        ports:
+            - "4003:4003" # Optional, expose ports for projects
+        stdin_open: true
+        tty: true
+        networks:
+            nginx_mysql_php_network:
+                ipv4_address: 192.17.0.11
 volumes:
     vnn_mysql8:
     vnn_php:
+    node:
 
 networks:
   nginx_mysql_php_network:
