@@ -19,13 +19,14 @@ services:
                 ipv4_address: 192.17.0.2
     php:
         container_name: docker-playon-php
-        build: ${PHP_BUILD}
+        build:
+            context: .
+            dockerfile: ${PHP_BUILD}/Dockerfile
         restart: always
         volumes:
             - vnn_php:/var/www/     
             - ${PHP_FPM_CONFIG_ROOT}/usr/local/etc/php-fpm.d/www.conf:/usr/local/etc/php-fpm.d/www.conf
             - ${PHP_FPM_CONFIG_ROOT}/usr/local/etc/php/conf.d/php.ini:/usr/local/etc/php/conf.d/custom.ini
-            - ${SSH_KEYS}:/root/.ssh
         ports:
             - "9909:9000"
         extra_hosts:
@@ -100,7 +101,9 @@ services:
                 ipv4_address: 192.17.0.9
     java:        
         container_name: docker-playon-amazoncorretto
-        build: ${AMAZON_CORRETO_BUILD}
+        build:
+            context: .
+            dockerfile: ${AMAZON_CORRETO_BUILD}/Dockerfile
         restart: always
         ports:
             - "8090:8090"
@@ -109,7 +112,6 @@ services:
             - MAVEN_PASSWORD=${MAVEN_PASSWORD}
         volumes:
             - vnn_php:/Users/Shared/allstar
-            - ${SSH_KEYS}:/root/.ssh
         extra_hosts:
             - "api.localhost:192.17.0.2"
             - "api-v2.localhost:192.17.0.2"
@@ -119,11 +121,12 @@ services:
                 ipv4_address: 192.17.0.10
     nodejs:
         container_name: docker-playon-nodejs
-        build: ${NODEJS_BUILD}
+        build:  # copy file outside from dockerfile needs this context
+            context: .
+            dockerfile: ${NODEJS_BUILD}/Dockerfile
         restart: always
         volumes:
             - node:/projects
-            - ${SSH_KEYS}:/root/.ssh
         extra_hosts:
             - "api.localhost:192.17.0.2"
         ports:

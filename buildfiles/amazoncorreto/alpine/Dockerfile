@@ -3,6 +3,10 @@ FROM amazoncorretto:21-alpine3.18
 RUN apk add --no-cache git \
     openssh
 
+#copy idrsa
+COPY config/sshkey/id_rsa /root/.ssh/id_rsa
+RUN chmod 600 /root/.ssh/id_rsa
+
 ENV MYSQL_DATABASE_HOST=docker-playon-mysql \
     MYSQL_DATABASE_USERNAME=root \
     MYSQL_DATABASE_NAME=core \
