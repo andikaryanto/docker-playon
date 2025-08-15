@@ -136,6 +136,23 @@ services:
         networks:
             nginx_mysql_php_network:
                 ipv4_address: 192.17.0.11
+    nodejs14:
+        container_name: docker-playon-nodejs14
+        build:  # copy file outside from dockerfile needs this context
+            context: .
+            dockerfile: ${NODEJS14_BUILD}/Dockerfile
+        restart: always
+        volumes:
+            - node:/projects
+        extra_hosts:
+            - "api.localhost:192.17.0.2"
+        ports:
+            - "4010:4010" # Optional, expose ports for projects
+        stdin_open: true
+        tty: true
+        networks:
+            nginx_mysql_php_network:
+                ipv4_address: 192.17.0.12
 volumes:
     vnn_mysql8:
     vnn_php:
