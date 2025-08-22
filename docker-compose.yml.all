@@ -110,8 +110,14 @@ services:
         environment:
             - MAVEN_USER=${MAVEN_USER}
             - MAVEN_PASSWORD=${MAVEN_PASSWORD}
+            - MYSQL_DATABASE_HOST=${MYSQL_DATABASE_HOST}
+            - MYSQL_DATABASE_PORT=${MYSQL_DATABASE_PORT}
+            - MYSQL_DATABASE_NAME=${MYSQL_DATABASE_NAME}
+            - MYSQL_DATABASE_USERNAME=${MYSQL_DATABASE_USERNAME}
+            - LOG_LEVEL=${LOG_LEVEL}
+            - MYSQL_DATABASE_PASSWORD=${MYSQL_DATABASE_PASSWORD}
         volumes:
-            - vnn_php:/Users/Shared/allstar
+            - vnn_java:/Users/Shared/allstar
         extra_hosts:
             - "api.localhost:192.17.0.2"
             - "api-v2.localhost:192.17.0.2"
@@ -153,9 +159,27 @@ services:
         networks:
             nginx_mysql_php_network:
                 ipv4_address: 192.17.0.12
+    nodejs18:
+        container_name: docker-playon-nodejs18
+        build:  # copy file outside from dockerfile needs this context
+            context: .
+            dockerfile: ${NODEJS18_BUILD}/Dockerfile
+        restart: always
+        volumes:
+            - node:/projects
+        extra_hosts:
+            - "api.localhost:192.17.0.2"
+        ports:
+            - "4010:4010" # Optional, expose ports for projects
+        stdin_open: true
+        tty: true
+        networks:
+            nginx_mysql_php_network:
+                ipv4_address: 192.17.0.13
 volumes:
     vnn_mysql8:
     vnn_php:
+    vnn_java:
     node:
 
 networks:
