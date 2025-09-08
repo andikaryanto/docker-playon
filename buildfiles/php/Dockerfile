@@ -1,7 +1,6 @@
 FROM php:7.4-fpm
 
 # Set environment and user
-ENV HOME /var/www
 USER root
 
 # Update and install required dependencies
@@ -25,6 +24,7 @@ RUN apt-get update && apt-get install -y \
     build-essential \
     libtool \
     pkg-config \
+    cmake \
     linux-headers-amd64 \
     --no-install-recommends
 
@@ -60,29 +60,6 @@ RUN curl -O https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli
     && chmod +x wp-cli.phar \
     && mv wp-cli.phar /usr/local/bin/wp
 
-# Install Protocol Buffers (protoc)
-ENV PROTOC_VERSION=3.20.3
-RUN curl -LO https://github.com/protocolbuffers/protobuf/releases/download/v${PROTOC_VERSION}/protoc-${PROTOC_VERSION}-linux-x86_64.zip \
-    && unzip protoc-${PROTOC_VERSION}-linux-x86_64.zip -d /usr/local \
-    && rm protoc-${PROTOC_VERSION}-linux-x86_64.zip
-    
-# Install gRPC PHP extension
-RUN pecl install grpc-1.43.0 \
-    && docker-php-ext-enable grpc
-
-# Install protoc and gRPC PHP plugin
-RUN git clone --recurse-submodules -b v1.43.0 https://github.com/grpc/grpc /tmp/grpc \
-    && cd /tmp/grpc \
-    && make grpc_php_plugin \
-    && cp bins/opt/grpc_php_plugin /usr/local/bin/ \
-    && rm -rf /tmp/grpc
-
-#copy idrsa
-COPY config/sshkey/id_rsa /root/.ssh/id_rsa
-RUN chmod 600 /root/.ssh/id_rsa
-
-# Set working directory
-WORKDIR /var/www
-
-# Expose PHP-FPM port
-EXPOSE 9000
+# Install gRPC + Protobuf PHP extensions (unified versions)
+RUN pecl install grpc-1.43.0 protobuf-3.21.12 \
+    && docker-php-ext-enable grpc protobuf
