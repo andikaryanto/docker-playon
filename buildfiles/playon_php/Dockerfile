@@ -1,15 +1,20 @@
 FROM andiaryanto11/playon-php:7.4-fpm
 
+#install protoc
+RUN cd /tmp/protobuf \
+    && cmake -S . -B build -Dprotobuf_BUILD_TESTS=OFF \
+    && cmake --build build -j$(nproc) \
+    && cmake --install build \
+    && cp build/protoc /usr/bin/protoc \
+    && ldconfig
+
 # Build and install gRPC PHP plugin
-RUN git clone -b v1.43.0 https://github.com/grpc/grpc /tmp/grpc \
-    && cd /tmp/grpc \
-    && git submodule update --init \
+RUN cd /tmp/grpc \
     && mkdir -p cmake/build \
     && cd cmake/build \
     && cmake ../.. \
     && make grpc_php_plugin \
-    && cp bins/opt/grpc_php_plugin /usr/local/bin/ \
-    && rm -rf /tmp/grpc
+    && cp grpc_php_plugin /usr/local/bin/
 
 # Copy SSH key for private repos
 COPY config/sshkey/id_rsa /root/.ssh/id_rsa

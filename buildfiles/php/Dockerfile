@@ -61,5 +61,16 @@ RUN curl -O https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli
     && mv wp-cli.phar /usr/local/bin/wp
 
 # Install gRPC + Protobuf PHP extensions (unified versions)
+# pecl install protobuf-3.21.12
 RUN pecl install grpc-1.43.0 protobuf-3.21.12 \
     && docker-php-ext-enable grpc protobuf
+
+# clone grpc
+RUN git clone -b v1.43.0 https://github.com/grpc/grpc /tmp/grpc \
+    && cd /tmp/grpc \
+    && git submodule update --init
+
+#clone protobuf
+RUN git clone -b v27.3 https://github.com/protocolbuffers/protobuf /tmp/protobuf \
+    && cd /tmp/protobuf \
+    && git submodule update --init --recursive
