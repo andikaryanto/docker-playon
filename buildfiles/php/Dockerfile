@@ -53,24 +53,36 @@ RUN docker-php-source extract \
 # Install and configure Xdebug for PHP 7.4
 RUN pecl install xdebug-3.1.6 \
     && docker-php-ext-enable xdebug \
-    && echo "xdebug.mode = coverage" >> /usr/local/etc/php/php.ini
+    && echo "xdebug.mode = debug" >> /usr/local/etc/php/php.ini \
+    && echo "xdebug.start_with_request = yes" >> /usr/local/etc/php/php.ini
 
 # Install wp-cli
 RUN curl -O https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar \
     && chmod +x wp-cli.phar \
     && mv wp-cli.phar /usr/local/bin/wp
 
-# Install gRPC + Protobuf PHP extensions (unified versions)
-# pecl install protobuf-3.21.12
-RUN pecl install grpc-1.43.0 protobuf-3.21.12 \
-    && docker-php-ext-enable grpc protobuf
+# Install gRPC extensions (unified versions)
+RUN pecl install grpc-1.74.0 \
+    && docker-php-ext-enable grpc
 
 # clone grpc
-RUN git clone -b v1.43.0 https://github.com/grpc/grpc /tmp/grpc \
+RUN git clone -b v1.74.0 https://github.com/grpc/grpc /tmp/grpc \
     && cd /tmp/grpc \
-    && git submodule update --init
+    && git submodule update --init \
+    && cd /tmp/grpc \
+    && mkdir -p cmake/build \
+    && cd cmake/build \
+    && cmake ../.. \
+    && make grpc_php_plugin \
+    && cp grpc_php_plugin /usr/local/bin/
 
 #clone protobuf
-RUN git clone -b v27.3 https://github.com/protocolbuffers/protobuf /tmp/protobuf \
+RUN git clone -b v25.2 https://github.com/protocolbuffers/protobuf /tmp/protobuf \
     && cd /tmp/protobuf \
-    && git submodule update --init --recursive
+    && git submodule update --init --recursive \
+    && cd /tmp/protobuf \
+    && cmake -S . -B build -Dprotobuf_BUILD_TESTS=OFF \
+    && cmake --build build -j$(nproc) \
+    && cmake --install build \
+    && cp build/protoc /usr/bin/protoc \
+    && ldconfig
