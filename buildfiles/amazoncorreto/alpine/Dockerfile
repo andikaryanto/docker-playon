@@ -6,7 +6,6 @@ RUN apk add --no-cache git \
 #copy idrsa
 COPY config/sshkey/id_rsa /root/.ssh/id_rsa
 RUN chmod 600 /root/.ssh/id_rsa
-
 WORKDIR /Users/Shared/allstar
 
 EXPOSE 8090
